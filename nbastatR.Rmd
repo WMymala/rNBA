@@ -1,0 +1,52 @@
+---
+title: "NBA data"
+author: "Walter Mymala"
+date: "7/30/2021"
+output: html_document
+---
+
+```{r}
+
+devtools::install_github("abresler/nbastatR")
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(nbastatR) ## data of every NBA player EVER
+lsf.str("package:nbastatR")
+```
+
+```{r}
+# avoid: "size of the connection buffer (131072) was not large enough"
+Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 2) 
+assign_nba_players()
+```
+
+players_careers()
+• dataPlayerCareerTotalsAllStarSeason
+• dataPlayerCareerTotalsPostSeason
+• dataPlayerCareerTotalsRegularSeason
+• dataPlayerSeasonRankingsPostSeason
+• dataPlayerSeasonRankingsRegularSeason
+• dataPlayerSeasonTotalsAllStarSeason
+• dataPlayerSeasonTotalsPostSeason
+• dataPlayerSeasonTotalsRegularSeason
+
+The mode input requires one of the following designations:
+Totals
+PerGame
+Per36
+
+```{r}
+# function to get 8 tibbles from above
+# players_careers(players = c("LeBron James")) similar thing as below
+# kobe_totals <- players_careers(players = c("Kobe Bryant"),
+#                modes = c("Totals"))
+
+kobe_totals <- players_careers(players = c("Kobe Bryant"), modes = c("Totals", "PerGame", "Per36"))
+
+
+## data.frame of active NBA players as of 2020-2021 NBA season
+activePlayers <- df_dict_nba_players %>% filter(isActive == "TRUE") %>% select(namePlayer)
+activePlayers
+```
+
