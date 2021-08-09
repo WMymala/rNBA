@@ -1,0 +1,21 @@
+---
+title: "Bball Shooting Correlations - 49 Leagues"
+author: "Walter Mymala"
+date: "8/9/2021"
+output: html_document
+---
+
+** Dataset from Jacob Baruch on Kaggle.com:https://www.kaggle.com/jacobbaruch/basketball-players-stats-per-season-49-leagues 
+
+Contains stats scraped from 49 basketball legues from around the world 
+**
+
+```{r echo = F, results = 'hide'}
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+
+D <- read.csv("~/Desktop/MoneyBall/players_stats_by_season_full_details.csv", header=FALSE)
+attach(D) # access variables in the data frame without calling data frame
+```
+
