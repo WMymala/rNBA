@@ -1,6 +1,6 @@
 # thinking-hoop
 
-Thank you for viewing ( ´ ▽ ` )ﾉ! Beginning data to analyze basketball(e.g. player stats, salary, correlations between salary and wins, etc.)
+Thank you for viewing ( ´ ▽ ` )ﾉ! This will be various files to analyze basketball(e.g. player stats, salary, correlations between salary and wins, etc.)
 
 For .rmd #1(each rmd will be numbered), the data used is from 'nbastatR' library from R
 
