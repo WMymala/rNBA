@@ -7,15 +7,61 @@ output: html_document
 
 ** Dataset from Jacob Baruch on Kaggle.com:https://www.kaggle.com/jacobbaruch/basketball-players-stats-per-season-49-leagues 
 
-Contains stats scraped from 49 basketball legues from around the world 
-**
+Contains stats scraped from 49 basketball leagues from around the world 
+from 1949 to 2020**
 
 ```{r echo = F, results = 'hide'}
 library(tidyverse)
 library(dplyr)
 library(ggplot2)
 
-D <- read.csv("~/Desktop/MoneyBall/players_stats_by_season_full_details.csv", header=FALSE)
-attach(D) # access variables in the data frame without calling data frame
+D <- read.csv("~/Desktop/MoneyBall/players_stats_by_season_full_details.csv")
+
+D$FGPct = D$FGM / D$FGA # include FG% in dataset and order it in column neatly
+D$FTPct = D$FTM / D$FTA # include FT% ...
+D$X3Pct = D$X3PM / D$X3PA # include X3P% ...
+
+D = D %>% select(League, Season, Stage, Player, Team, GP, MIN, FGM, FGA, FGPct, X3PM, X3PA, X3Pct, FTM, FTA, FTPct, TOV, PF, ORB, DRB, REB, AST, STL, BLK, PTS, birth_date, birth_year, birth_month, height, height_cm, weight, weight_kg, nationality, high_school,  draft_round, draft_pick, draft_team)
+
+head(D)
 ```
+
+```{r}
+## 
+unique(League, incomparables = FALSE)
+```
+
+**The Euroleague and Eurocup is bascally like soccer's Champions League and Europa Laegue in that it consists of having top European teams playing one another. These teams play in these respective leagues as well as their own domestic league concurrently. This may affect the data.**
+
+** The European professional club basketball system starting in 2018**
+
+From Reddit:
+13 teams have a contract and they participate no matter what. These teams are Real Madrid(ESP), Barcelona(ESP), Baskonia(ESP), Olimpia Milano(ITA), Zalgiris(LTU), Panathinaikos(GRC), Olympiacos(GRC), Panathinaikos(GRC), Fenerbahce(TUR), Anadolu Efes(TUR), CSKA Moscow(RUS), LDLC ASVEL(FRA) and Maccabi Tel Aviv(ISR).
+
+The 7 spots left :
+
+The winner of eurocup (second tier European competition)
+
+The winner of ABA league (league based on former countries of Yuguslavia: Bosnia and Herzegovina, Croatia, Macedonia, Montenegro, Serbia (including the regions of Kosovo and Vojvodina) and Slovenia)
+
+The winner or runner up of VTB(Russian) league (usually CSKA wins, so the second team from VTB)
+
+wildcard places lasting 2-years or 1-year
+
+The winner of BBL ( German league).
+
+```{r}
+# subset from dataframe of ONLY in 2019-2020 regular season with statistical minimums to qualify for NBA League Leaders to limit outliers: 
+NBA19_20R <- D %>% filter(League == "NBA", Season == "2019 - 2020", FTA >= 125) # observations drop from 360 to 
+head(NBA19_20R)
+
+plot(NBA19_20R$X3Pct, NBA19_20R$FTPct, xlab = '3 Point %', ylab = 'Free Throw %')
+```
+From our data, ignoring the outliers near 0.0 3 point % and 0.6 3 point %, it looks like a very slight increase in free throw % is positive relationship in relation to free throw %. 
+
+```{r}
+
+```
+
+
 
