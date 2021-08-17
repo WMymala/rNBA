@@ -28,7 +28,7 @@ head(D)
 
 ```{r}
 ## 
-unique(League, incomparables = FALSE)
+unique(D$League, incomparables = FALSE)
 ```
 
 **The Euroleague and Eurocup is bascally like soccer's Champions League and Europa Laegue in that it consists of having top European teams playing one another. These teams play in these respective leagues as well as their own domestic league concurrently. This may affect the data.**
@@ -51,17 +51,49 @@ wildcard places lasting 2-years or 1-year
 The winner of BBL ( German league).
 
 ```{r}
-# subset from dataframe of ONLY in 2019-2020 regular season with statistical minimums to qualify for NBA League Leaders to limit outliers: 
-NBA19_20R <- D %>% filter(League == "NBA", Season == "2019 - 2020", FTA >= 125) # observations drop from 360 to 
+# subset from dataframe just the NBA in 2019-2020 regular season with statistical minimums to qualify for NBA League Leaders to limit outliers: 
+
+NBA19_20R <- D %>% filter(League == "NBA", Season == "2019 - 2020", FTA >= 125) # observations drop from 360 to 125 after adding statistical minimum
 head(NBA19_20R)
 
 plot(NBA19_20R$X3Pct, NBA19_20R$FTPct, xlab = '3 Point %', ylab = 'Free Throw %')
+
+## subset dataframe of the second best league in the 2019-2020 regular season according to ESPN with statistical minimums to qualify for Leagues Leaders(Euroleague players must play 51% of games to be in league leaders, so 34 • .51 = 17.34 is 18 games minimum)
+
+EuroL19_20R <- D %>% filter(League == "Euroleague", Season == "2019 - 2020", GP >= 18)
+# observations drop from 237 to 183 after adding statistical minimum
+
+NBAxEuroL19_20R <- rbind(NBA19_20R, EuroL19_20R) # merge data
 ```
-From our data, ignoring the outliers near 0.0 3 point % and 0.6 3 point %, it looks like a very slight increase in free throw % is positive relationship in relation to free throw %. 
+From our data, ignoring the outliers near 0.0 3 point % and 0.6 3 point %, there is no clear pattern to indicate relationship between 3 point % and free throw %. Let's do a scatterplot, but with ggplot. 
 
 ```{r}
+## working w/ ggplot
+ggplot(NBAxEuroL19_20R, aes(x = X3Pct, y = FTPct, col = League)) + geom_point() 
+```
+```{r}
+# also want to represent points by mapping so individual dot changes depending on PTS variable(NBA plays more games than Euroleague)
+ggplot(NBAxEuroL19_20R, aes(x = X3Pct, y = FTPct, col = League, size = PTS)) + geom_point() + scale_color_manual(values = c("NBA" = "blue", "Euroleague" = "orange")) + geom_smooth(method = lm, se = FALSE)
 
+cor(NBAxEuroL19_20R$X3Pct, NBAxEuroL19_20R$FTPct)
 ```
 
+The scatter plot data shows no apparent relationship between 3-point shooting and free throw percentage since there is no linear pattern. Due to this, the regression line might not have any use here. We can tell since the correlation between the two functions is N/A.
+
+```{r}
+# map FTPct to transparency of each point
+## ggplot(NBAxEuroL19_20R) + geom_point(aes(x = X3Pct, y = FTPct, col = League, size = PTS, shape = League, alpha = FTPct)) + scale_color_manual(values = c("NBA" = "blue", "Euroleague" = "orange"))
+```
+
+```{r}
+# histograms
+ggplot(NBAxEuroL19_20R, aes(x = FTPct)) + 
+  geom_histogram(bins = 30) + geom_histogram(color="black", fill="white") 
+
+# overlaid
+ggplot(NBAxEuroL19_20R, aes(x = FTPct, fill = League, color = League)) +
+  geom_histogram(alpha = 0.5, position = "identity") + scale_color_manual(values=c("orange", "blue")) +
+  theme(legend.position="bottom") 
+```
 
 
