@@ -90,7 +90,7 @@ The scatter plot data shows no apparent relationship between 3-point shooting an
 ggplot(NBAxEuroL19_20R, aes(x = FTPct)) + 
   geom_histogram(bins = 30) + geom_histogram(color="black", fill="white") 
 
-# overlaid
+# overlaid and separated by league
 ggplot(NBAxEuroL19_20R, aes(x = FTPct, fill = League, color = League)) +
   geom_histogram(alpha = 0.5, position = "identity") + scale_color_manual(values=c("orange", "blue")) +
   theme(legend.position="bottom") 
