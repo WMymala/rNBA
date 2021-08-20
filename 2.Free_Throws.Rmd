@@ -10,7 +10,9 @@ output: html_document
 Contains stats scraped from 49 basketball leagues from around the world 
 from 1949 to 2020**
 
-```{r echo = F, results = 'hide'}
+The purpose of this study is to see if the shooting fundamentals are held to the highest standard for each league and each time period in basketball. It tends to be a lithmus test for one's ability to be able to shoot the basketball in general; people look at college players's free throw percentage to judge their shooting potential for the professional game.
+
+```{r results = 'hide'}
 library(tidyverse)
 library(dplyr)
 library(ggplot2)
@@ -21,17 +23,22 @@ D$FGPct = D$FGM / D$FGA # include FG% in dataset and order it in column neatly
 D$FTPct = D$FTM / D$FTA # include FT% ...
 D$X3Pct = D$X3PM / D$X3PA # include X3P% ...
 
+# manually add in new variables to dataset in order that I want instead of the end. There's got to be a better way to do this...
 D = D %>% select(League, Season, Stage, Player, Team, GP, MIN, FGM, FGA, FGPct, X3PM, X3PA, X3Pct, FTM, FTA, FTPct, TOV, PF, ORB, DRB, REB, AST, STL, BLK, PTS, birth_date, birth_year, birth_month, height, height_cm, weight, weight_kg, nationality, high_school,  draft_round, draft_pick, draft_team)
-
-head(D)
 ```
 
 ```{r}
-## 
+# displays first 6 rows of dataset
+head(D)
+```
+
+
+```{r}
+# extract all basketball leagues that are in the dataset
 unique(D$League, incomparables = FALSE)
 ```
 
-**The Euroleague and Eurocup is bascally like soccer's Champions League and Europa Laegue in that it consists of having top European teams playing one another. These teams play in these respective leagues as well as their own domestic league concurrently. This may affect the data.**
+**The Euroleague and Eurocup is bascally like soccer's Champions League and Europa League in that it consists of having top European teams playing one another. These teams play in these respective leagues as well as their own domestic league concurrently. This may affect the data.**
 
 ** The European professional club basketball system starting in 2018**
 
@@ -56,8 +63,13 @@ The winner of BBL ( German league).
 NBA19_20R <- D %>% filter(League == "NBA", Season == "2019 - 2020", FTA >= 125) # observations drop from 360 to 125 after adding statistical minimum
 head(NBA19_20R)
 
+# scatterplot w/o using ggplot
 plot(NBA19_20R$X3Pct, NBA19_20R$FTPct, xlab = '3 Point %', ylab = 'Free Throw %')
+```
 
+From our data, ignoring the outliers near 0.0 3 point % and 0.6 3 point %, there is no clear pattern to indicate relationship between 3 point % and free throw %. Let's do a scatterplot, but with ggplot. 
+
+```{r}
 ## subset dataframe of the second best league in the 2019-2020 regular season according to ESPN with statistical minimums to qualify for Leagues Leaders(Euroleague players must play 51% of games to be in league leaders, so 34 • .51 = 17.34 is 18 games minimum)
 
 EuroL19_20R <- D %>% filter(League == "Euroleague", Season == "2019 - 2020", GP >= 18)
@@ -65,10 +77,10 @@ EuroL19_20R <- D %>% filter(League == "Euroleague", Season == "2019 - 2020", GP 
 
 NBAxEuroL19_20R <- rbind(NBA19_20R, EuroL19_20R) # merge data
 ```
-From our data, ignoring the outliers near 0.0 3 point % and 0.6 3 point %, there is no clear pattern to indicate relationship between 3 point % and free throw %. Let's do a scatterplot, but with ggplot. 
+
 
 ```{r}
-## working w/ ggplot
+## working w/ ggplots now: scatterplot
 ggplot(NBAxEuroL19_20R, aes(x = X3Pct, y = FTPct, col = League)) + geom_point() 
 ```
 ```{r}
@@ -80,20 +92,28 @@ cor(NBAxEuroL19_20R$X3Pct, NBAxEuroL19_20R$FTPct)
 
 The scatter plot data shows no apparent relationship between 3-point shooting and free throw percentage since there is no linear pattern. Due to this, the regression line might not have any use here. We can tell since the correlation between the two functions is N/A.
 
-```{r}
+```{r echo = F, results = 'hide'}
+## ggplot practice
 # map FTPct to transparency of each point
 ## ggplot(NBAxEuroL19_20R) + geom_point(aes(x = X3Pct, y = FTPct, col = League, size = PTS, shape = League, alpha = FTPct)) + scale_color_manual(values = c("NBA" = "blue", "Euroleague" = "orange"))
+
+## ggplot(NBAxEuroL19_20R, aes(x = FTPct)) + 
+## geom_histogram(bins = 30) + geom_histogram(color="black", fill="white") 
 ```
 
 ```{r}
-# histograms
-ggplot(NBAxEuroL19_20R, aes(x = FTPct)) + 
-  geom_histogram(bins = 30) + geom_histogram(color="black", fill="white") 
-
-# overlaid and separated by league
+# histogram - overlaid and separated by league
 ggplot(NBAxEuroL19_20R, aes(x = FTPct, fill = League, color = League)) +
-  geom_histogram(alpha = 0.5, position = "identity") + scale_color_manual(values=c("orange", "blue")) +
+  geom_histogram(alpha = 0.4, position = "identity") + scale_color_manual(values=c("orange", "blue")) +
   theme(legend.position="bottom") 
-```
 
+# density function
+NBAxEuroDF <- ggplot(NBAxEuroL19_20R, aes(x = FTPct, fill = League, color = League)) + geom_density()
+NBAxEuroDF + geom_density(alpha = 0.4, position = "identity") + scale_color_manual(values=c("orange", "blue")) +
+  theme(legend.position="bottom")  
+
+```
+It seems like histograms are the best way to display comparisons for free throw shooting information between groups.
+
+Based on the histogram, the Euroleague and NBA seem to have the same amount of free throw percentage rates.
 
