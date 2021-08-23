@@ -8,7 +8,7 @@ output: html_document
 ** Dataset from Jacob Baruch on Kaggle.com:https://www.kaggle.com/jacobbaruch/basketball-players-stats-per-season-49-leagues 
 
 Contains stats scraped from 49 basketball leagues from around the world 
-from 1949 to 2020**
+from 1990 to 2020**
 
 The purpose of this study is to see if the shooting fundamentals are held to the highest standard for each league and each time period in basketball. It tends to be a lithmus test for one's ability to be able to shoot the basketball in general; people look at college players's free throw percentage to judge their shooting potential for the professional game.
 
@@ -42,7 +42,7 @@ unique(D$League, incomparables = FALSE)
 
 ** The European professional club basketball system starting in 2018**
 
-From Reddit:
+From MrThirteenXIII from Reddit(https://www.reddit.com/r/Euroleague/comments/hiolt2/how_are_euroleague_teams_selected/):
 13 teams have a contract and they participate no matter what. These teams are Real Madrid(ESP), Barcelona(ESP), Baskonia(ESP), Olimpia Milano(ITA), Zalgiris(LTU), Panathinaikos(GRC), Olympiacos(GRC), Panathinaikos(GRC), Fenerbahce(TUR), Anadolu Efes(TUR), CSKA Moscow(RUS), LDLC ASVEL(FRA) and Maccabi Tel Aviv(ISR).
 
 The 7 spots left :
@@ -103,17 +103,47 @@ The scatter plot data shows no apparent relationship between 3-point shooting an
 
 ```{r}
 # histogram - overlaid and separated by league
+
 ggplot(NBAxEuroL19_20R, aes(x = FTPct, fill = League, color = League)) +
   geom_histogram(alpha = 0.4, position = "identity") + scale_color_manual(values=c("orange", "blue")) +
   theme(legend.position="bottom") 
 
-# density function
-NBAxEuroDF <- ggplot(NBAxEuroL19_20R, aes(x = FTPct, fill = League, color = League)) + geom_density()
-NBAxEuroDF + geom_density(alpha = 0.4, position = "identity") + scale_color_manual(values=c("orange", "blue")) +
-  theme(legend.position="bottom")  
+# density chart
+ggplot(data = NBAxEuroL19_20R, aes(x = FTPct, group = League, fill = League)) + geom_density(adjust = 1.5, alpha = .4) + scale_color_manual(values=c("orange", "blue")) + theme(legend.position="bottom")
 
 ```
-It seems like histograms are the best way to display comparisons for free throw shooting information between groups.
+
+It seems like histograms along with it's density plots are the best way to display comparisons for free throw shooting information between groups.
 
 Based on the histogram, the Euroleague and NBA seem to have the same amount of free throw percentage rates.
+
+I want to now compare just the NBA between eras by making separate histograms for side-by side comparisons between the eras. I could do by decade, but that isn't very accurate. I used WinesburgOhio's post on Reddit as reference to decide.(https://www.reddit.com/r/nbadiscussion/comments/khl4zh/eras_in_nba_history_when_do_they_beginend_and_why/). Our data has provided information for 3 eras in NBA basketball.
+
+Eras(Summarized):
+
+• '93-03: Jordan Era. Dead ball era—slower paced games and more defensive minded. 3 point shooting starting to be utilized more.
+
+• '04-13: Start of modern basketball era? Pace picked back up, 3 point shooting up more, more individual NBA talent than before.
+
+• '14-Present: Curry/3-point era. Pace increased, 3-point shooting increased considerably, positionless basketball, defense harder to play b/c refs(ticky-tack fouls), analytics to judge players.
+
+
+```{r}
+# Jordan Era era histogram
+
+# count how many datapoints for each one season
+D %>% filter(League == "NBA", Season == "1999 - 2000") %>% count # 342
+D %>% filter(League == "NBA", Season == "2000 - 2001") %>% count # 315
+D %>% filter(League == "NBA", Season == "2001 - 2002") %>% count # 319
+D %>% filter(League == "NBA", Season == "2002 - 2003") %>% count # 364
+
+JordanEra = subset(D, Season == "1999 - 2000" | Season == "2000 - 2001" | Season == "2001 - 2002" | Season == "2002 - 2003")
+ggplot(JordanEra, aes(x = FTPct, fill = Season)) + geom_histogram(alpha = 0.5, position = "identity") + scale_fill_manual(labels = c("1999 - 2000", "2000 - 2001","2001 - 2002","2002 - 2003"), values=c("black", "seagreen", "coral", "yellow")) 
+  theme(legend.position="bottom") 
+
+# Jordan Era era density chart
+ggplot(data = JordanEra, aes(x = FTPct, group = Season, fill = Season)) + geom_density(adjust = 1.5, alpha = .4) + scale_color_manual(values=c("#999999", "#E69F00", "#56B4E9", "000000")) + theme(legend.position="bottom")
+
+```
+
 
