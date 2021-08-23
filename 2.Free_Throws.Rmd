@@ -109,7 +109,7 @@ ggplot(NBAxEuroL19_20R, aes(x = FTPct, fill = League, color = League)) +
   theme(legend.position="bottom") 
 
 # density chart
-ggplot(data = NBAxEuroL19_20R, aes(x = FTPct, group = League, fill = League)) + geom_density(adjust = 1.5, alpha = .4) + scale_color_manual(values=c("orange", "blue")) + theme(legend.position="bottom")
+ggplot(data = NBAxEuroL19_20R, aes(x = FTPct, group = League, fill = League)) + geom_density(adjust = 1.5, alpha = .4) + scale_fill_manual(values=c("orange", "blue")) + theme(legend.position="bottom")
 
 ```
 
@@ -117,7 +117,7 @@ It seems like histograms along with it's density plots are the best way to displ
 
 Based on the histogram, the Euroleague and NBA seem to have the same amount of free throw percentage rates.
 
-I want to now compare just the NBA between eras by making separate histograms for side-by side comparisons between the eras. I could do by decade, but that isn't very accurate. I used WinesburgOhio's post on Reddit as reference to decide.(https://www.reddit.com/r/nbadiscussion/comments/khl4zh/eras_in_nba_history_when_do_they_beginend_and_why/). Our data has provided information for 3 eras in NBA basketball.
+I want to now compare just the NBA between eras by making separate charts for side-by side comparisons between the eras and seasons within the eras. I could compare the decade by decade, but that isn't very accurate. I used WinesburgOhio's post on Reddit as reference to decide.(https://www.reddit.com/r/nbadiscussion/comments/khl4zh/eras_in_nba_history_when_do_they_beginend_and_why/). Our data has provided information for 3 eras in NBA basketball.
 
 Eras(Summarized):
 
@@ -142,7 +142,14 @@ ggplot(JordanEra, aes(x = FTPct, fill = Season)) + geom_histogram(alpha = 0.5, p
   theme(legend.position="bottom") 
 
 # Jordan Era era density chart
-ggplot(data = JordanEra, aes(x = FTPct, group = Season, fill = Season)) + geom_density(adjust = 1.5, alpha = .4) + scale_color_manual(values=c("#999999", "#E69F00", "#56B4E9", "000000")) + theme(legend.position="bottom")
+ggplot(data = JordanEra, aes(x = FTPct, group = Season, fill = Season)) + geom_density(adjust = 1.5, alpha = .4) + scale_fill_manual(values=c("black", "seagreen", "coral", "yellow")) + theme(legend.position="bottom")
+```
+
+We can see that the distibution of each season in this era is around the sane with the center of the distributions concentated around 0.80 range.
+
+Looking at the data, the Jordan Era with 4 seasons is way too much. I may stick with 3 each era(close to the beginning, in the middle, and end) so it's not so cluttered. 
+
+```{r}
 
 ```
 
