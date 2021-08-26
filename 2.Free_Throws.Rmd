@@ -119,17 +119,28 @@ Based on the histogram, the Euroleague and NBA seem to have the same amount of f
 
 I want to now compare just the NBA between eras by making separate charts for side-by side comparisons between the eras and seasons within the eras. I could compare the decade by decade, but that isn't very accurate. I used WinesburgOhio's post on Reddit as reference to decide.(https://www.reddit.com/r/nbadiscussion/comments/khl4zh/eras_in_nba_history_when_do_they_beginend_and_why/). Our data has provided information for 3 eras in NBA basketball.
 
+```{r}
+NBA <- D %>% filter(League == "NBA")
+```
+
 Eras(Summarized):
 
 • '93-03: Jordan Era. Dead ball era—slower paced games and more defensive minded. 3 point shooting starting to be utilized more.
 
-• '04-13: Start of modern basketball era? Pace picked back up, 3 point shooting up more, more individual NBA talent than before.
+• '04-13: Kobe/Duncan Era. Pace picked back up, 3 point shooting up more, more individual NBA talent than before.
 
 • '14-Present: Curry/3-point era. Pace increased, 3-point shooting increased considerably, positionless basketball, defense harder to play b/c refs(ticky-tack fouls), analytics to judge players.
 
 
+Important rule changes that may affect free throw percentages(from https://www.deseret.com/2019/2/21/20666425/nba-rules-have-adapted-over-the-years-to-make-the-game-more-fun-for-players-fans):
+
+• 2001 — "Illegal defense eliminated and zone defense allowed. Defensive 3-second rule prohibits defensive player from being in lane without guarding offensive player" (Sorenson, DeseretNews)
+
+• 2018 — "Shot clock reset to 14 after an offensive rebound rather than 24" (Sorenson, DeseretNews)
+
+
 ```{r}
-# Jordan Era era histogram
+# Jordan Era histogram
 
 # count how many datapoints for each one season
 D %>% filter(League == "NBA", Season == "1999 - 2000") %>% count # 342
@@ -137,20 +148,32 @@ D %>% filter(League == "NBA", Season == "2000 - 2001") %>% count # 315
 D %>% filter(League == "NBA", Season == "2001 - 2002") %>% count # 319
 D %>% filter(League == "NBA", Season == "2002 - 2003") %>% count # 364
 
-JordanEra = subset(D, Season == "1999 - 2000" | Season == "2000 - 2001" | Season == "2001 - 2002" | Season == "2002 - 2003")
-ggplot(JordanEra, aes(x = FTPct, fill = Season)) + geom_histogram(alpha = 0.5, position = "identity") + scale_fill_manual(labels = c("1999 - 2000", "2000 - 2001","2001 - 2002","2002 - 2003"), values=c("black", "seagreen", "coral", "yellow")) 
+JordanEra = subset(NBA, Season == "1999 - 2000" | Season == "2000 - 2001" | Season == "2001 - 2002" | Season == "2002 - 2003")
+ggplot(JordanEra, aes(x = FTPct, fill = Season)) + geom_histogram(alpha = 0.7, position = "dodge") + scale_fill_manual(labels = c("1999 - 2000", "2000 - 2001","2001 - 2002","2002 - 2003"), values=c("black", "seagreen", "coral", "yellow")) 
   theme(legend.position="bottom") 
 
-# Jordan Era era density chart
+# Jordan Era density chart
 ggplot(data = JordanEra, aes(x = FTPct, group = Season, fill = Season)) + geom_density(adjust = 1.5, alpha = .4) + scale_fill_manual(values=c("black", "seagreen", "coral", "yellow")) + theme(legend.position="bottom")
 ```
 
 We can see that the distibution of each season in this era is around the sane with the center of the distributions concentated around 0.80 range.
 
-Looking at the data, the Jordan Era with 4 seasons is way too much. I may stick with 3 each era(close to the beginning, in the middle, and end) so it's not so cluttered. 
+Looking at the data, the Jordan Era with 4 seasons is way too much. I may stick with 3 each era(close to the beginning—2 years into era, in the middle, and end—second to last year of era) so it's not so cluttered. 
 
 ```{r}
+# Kobe/Duncan Era era histogram
 
+# count how many datapoints for each one season
+D %>% filter(League == "NBA", Season == "2005 - 2006") %>% count # 336
+D %>% filter(League == "NBA", Season == "2009 - 2010") %>% count # 349
+D %>% filter(League == "NBA", Season == "2011 - 2012") %>% count # 376
+
+KBDuncEra = subset(NBA, Season == "2005 - 2006" | Season == "2009 - 2010" | Season == "2011 - 2012")
+ggplot(KBDuncEra, aes(x = FTPct, fill = Season)) + geom_histogram(alpha = 1, position = "dodge") + scale_fill_manual(labels = c("2005 - 2006", "2009 - 2010","2011 - 2012"), values=c("black", "seagreen", "coral")) 
+  theme(legend.position="bottom") 
+  
+# Jordan Era density chart
+ggplot(data = KBDuncEra, aes(x = FTPct, group = Season, fill = Season)) + geom_density(adjust = 1.5, alpha = .4) + scale_fill_manual(values=c("black", "seagreen", "coral")) + theme(legend.position="bottom")
 ```
 
 
