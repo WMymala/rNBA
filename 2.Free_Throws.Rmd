@@ -16,6 +16,8 @@ The purpose of this study is to see if the shooting fundamentals are held to the
 library(tidyverse)
 library(dplyr)
 library(ggplot2)
+library(knitr)
+library(ggrepel)
 
 D <- read.csv("~/Desktop/MoneyBall/players_stats_by_season_full_details.csv")
 
@@ -85,7 +87,24 @@ ggplot(NBAxEuroL19_20R, aes(x = X3Pct, y = FTPct, col = League)) + geom_point()
 ```
 ```{r}
 # also want to represent points by mapping so individual dot changes depending on PTS variable(NBA plays more games than Euroleague)
-ggplot(NBAxEuroL19_20R, aes(x = X3Pct, y = FTPct, col = League, size = PTS)) + geom_point() + scale_color_manual(values = c("NBA" = "blue", "Euroleague" = "orange")) + geom_smooth(method = lm, se = FALSE)
+
+# Let's just label these items.
+ix_label <- c("Ben Simmons", "Kyle Kuzma")
+
+plot <- ggplot(NBAxEuroL19_20R, aes(x = X3Pct, y = FTPct, col = League, size = PTS)) + geom_point() + scale_color_manual(values = c("NBA" = "blue", "Euroleague" = "orange")) + geom_smooth(method = lm, se = FALSE)
+
+for (i in 1:length(NBAxEuroL19_20R$Player)) {
+  if(ix_label[x] %in% NBAxEuroL19_20R$Player) {
+     p = plot +  geom_text_repel(label = tmp.data, nudge_x = -.05,
+    box.padding = 0.5,
+    nudge_y = -0.2,
+    segment.curvature = -0.1,
+    segment.ncp = 3,
+    segment.angle = 0) 
+  }
+}
+p 
+
 
 cor(NBAxEuroL19_20R$X3Pct, NBAxEuroL19_20R$FTPct)
 ```
@@ -156,6 +175,14 @@ ggplot(JordanEra, aes(x = FTPct, fill = Season)) + geom_histogram(alpha = 0.7, p
 ggplot(data = JordanEra, aes(x = FTPct, group = Season, fill = Season)) + geom_density(adjust = 1.5, alpha = .4) + scale_fill_manual(values=c("black", "seagreen", "coral", "yellow")) + theme(legend.position="bottom")
 ```
 
+```{r}
+# summary to confirm distributions
+D %>% filter(League == "NBA", Season == "1999 - 2000") %>% select(FTPct) %>% summary() 
+D %>% filter(League == "NBA", Season == "2000 - 2001") %>% select(FTPct) %>% summary()
+D %>% filter(League == "NBA", Season == "2001 - 2002") %>% select(FTPct) %>% summary()
+D %>% filter(League == "NBA", Season == "2002 - 2003") %>% select(FTPct) %>% summary()
+```
+
 We can see that the distibution of each season in this era is around the sane with the center of the distributions concentated around 0.80 range.
 
 Looking at the data, the Jordan Era with 4 seasons is way too much. I may stick with 3 each era(close to the beginning—2 years into era, in the middle, and end—second to last year of era) so it's not so cluttered. 
@@ -175,5 +202,7 @@ ggplot(KBDuncEra, aes(x = FTPct, fill = Season)) + geom_histogram(alpha = 1, pos
 # Jordan Era density chart
 ggplot(data = KBDuncEra, aes(x = FTPct, group = Season, fill = Season)) + geom_density(adjust = 1.5, alpha = .4) + scale_fill_manual(values=c("black", "seagreen", "coral")) + theme(legend.position="bottom")
 ```
+
+The distribution of free throw percentage in the 2011-2012 season(center at ~) is visibily higher by a slight margin compared to the 2005 - 2006 season and 2009 - 2010.
 
 
