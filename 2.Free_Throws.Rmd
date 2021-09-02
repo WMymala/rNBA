@@ -91,20 +91,15 @@ ggplot(NBAxEuroL19_20R, aes(x = X3Pct, y = FTPct, col = League)) + geom_point()
 # Let's just label these items.
 ix_label <- c("Ben Simmons", "Kyle Kuzma")
 
-plot <- ggplot(NBAxEuroL19_20R, aes(x = X3Pct, y = FTPct, col = League, size = PTS)) + geom_point() + scale_color_manual(values = c("NBA" = "blue", "Euroleague" = "orange")) + geom_smooth(method = lm, se = FALSE)
-
-for (i in 1:length(NBAxEuroL19_20R$Player)) {
-  if(ix_label[x] %in% NBAxEuroL19_20R$Player) {
-     p = plot +  geom_text_repel(label = tmp.data, nudge_x = -.05,
+plot <- ggplot(NBAxEuroL19_20R, aes(x = X3Pct, y = FTPct, col = League, size = PTS)) + geom_point(shape = ifelse(NBAxEuroL19_20R$Player == "Andre Drummond", 18, 20)) + scale_color_manual(values = c("NBA" = "blue", "Euroleague" = "orange")) + geom_smooth(method = lm, se = FALSE) + 
+  geom_text_repel(label = ifelse(NBAxEuroL19_20R$Player == "Andre Drummond", "Andre Drummond", ""), nudge_x = -.05,
     box.padding = 0.5,
     nudge_y = -0.2,
     segment.curvature = -0.1,
     segment.ncp = 3,
     segment.angle = 0) 
-  }
-}
-p 
 
+plot
 
 cor(NBAxEuroL19_20R$X3Pct, NBAxEuroL19_20R$FTPct)
 ```
@@ -144,9 +139,9 @@ NBA <- D %>% filter(League == "NBA")
 
 Eras(Summarized):
 
-• '93-03: Jordan Era. Dead ball era—slower paced games and more defensive minded. 3 point shooting starting to be utilized more.
+• '93-'03: Jordan Era. Dead ball era—slower paced games and more defensive minded. 3 point shooting starting to be utilized more.
 
-• '04-13: Kobe/Duncan Era. Pace picked back up, 3 point shooting up more, more individual NBA talent than before.
+• '04-'13: Kobe/Duncan Era. Pace picked back up, 3 point shooting up more, more individual NBA talent than before.
 
 • '14-Present: Curry/3-point era. Pace increased, 3-point shooting increased considerably, positionless basketball, defense harder to play b/c refs(ticky-tack fouls), analytics to judge players.
 
@@ -157,6 +152,20 @@ Important rule changes that may affect free throw percentages(from https://www.d
 
 • 2018 — "Shot clock reset to 14 after an offensive rebound rather than 24" (Sorenson, DeseretNews)
 
+I wanted to create summary table first to see if there were any major differences from a glance of the between the ranges  of the 1st and 3rd quantiles.
+
+```{r}
+Yr99_00 <- D %>% filter(League == "NBA", Season == "1999 - 2000") %>% select(FTPct) %>% summary() 
+Yr00_01 <- D %>% filter(League == "NBA", Season == "2000 - 2001") %>% select(FTPct) %>% summary()
+Yr01_02 <- D %>% filter(League == "NBA", Season == "2001 - 2002") %>% select(FTPct) %>% summary()
+Yr02_03 <- D %>% filter(League == "NBA", Season == "2002 - 2003") %>% select(FTPct) %>% summary()
+
+JordanEraData <- data.frame(Yr99_00[1:6], Yr00_01[1:6], Yr01_02[1:6], Yr02_03[1:6])
+colnames(JordanEraData) <- c("99-00", "00-01", "01-02", "02-03")
+
+require(pander)
+pandoc.table(JordanEraData, style = 'grid', caption = "Jordan Era('93-'03)")
+```
 
 ```{r}
 # Jordan Era histogram
@@ -175,13 +184,6 @@ ggplot(JordanEra, aes(x = FTPct, fill = Season)) + geom_histogram(alpha = 0.7, p
 ggplot(data = JordanEra, aes(x = FTPct, group = Season, fill = Season)) + geom_density(adjust = 1.5, alpha = .4) + scale_fill_manual(values=c("black", "seagreen", "coral", "yellow")) + theme(legend.position="bottom")
 ```
 
-```{r}
-# summary to confirm distributions
-D %>% filter(League == "NBA", Season == "1999 - 2000") %>% select(FTPct) %>% summary() 
-D %>% filter(League == "NBA", Season == "2000 - 2001") %>% select(FTPct) %>% summary()
-D %>% filter(League == "NBA", Season == "2001 - 2002") %>% select(FTPct) %>% summary()
-D %>% filter(League == "NBA", Season == "2002 - 2003") %>% select(FTPct) %>% summary()
-```
 
 We can see that the distibution of each season in this era is around the sane with the center of the distributions concentated around 0.80 range.
 
