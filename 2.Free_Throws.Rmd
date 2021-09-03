@@ -141,7 +141,7 @@ Eras(Summarized):
 
 • '93-'03: Jordan Era. Dead ball era—slower paced games and more defensive minded. 3 point shooting starting to be utilized more.
 
-• '04-'13: Kobe/Duncan Era. Pace picked back up, 3 point shooting up more, more individual NBA talent than before.
+• '04-'13: Kobe Era. Pace picked back up, 3 point shooting up more, more individual NBA talent than before.
 
 • '14-Present: Curry/3-point era. Pace increased, 3-point shooting increased considerably, positionless basketball, defense harder to play b/c refs(ticky-tack fouls), analytics to judge players.
 
@@ -203,11 +203,11 @@ Yr10_11 <- D %>% filter(League == "NBA", Season == "2010 - 2011") %>% select(FTP
 Yr11_12 <- D %>% filter(League == "NBA", Season == "2011 - 2012") %>% select(FTPct) %>% summary()
 Yr12_13 <- D %>% filter(League == "NBA", Season == "2012 - 2013") %>% select(FTPct) %>% summary()
 
-KBTDData <- data.frame(Yr03_04[1:6], Yr04_05[1:6], Yr05_06[1:6], Yr06_07[1:6], Yr07_08[1:6], Yr08_09[1:6], Yr09_10[1:6], Yr10_11[1:6],Yr11_12[1:6], Yr12_13[1:6])
-colnames(KBTDData) <- c("03-04", "04-05", "05-06", "06-07","07_08", "08-09", "09-10", "10-11", "11-12", "12-13")
+KBData <- data.frame(Yr03_04[1:6], Yr04_05[1:6], Yr05_06[1:6], Yr06_07[1:6], Yr07_08[1:6], Yr08_09[1:6], Yr09_10[1:6], Yr10_11[1:6],Yr11_12[1:6], Yr12_13[1:6])
+colnames(KBData) <- c("03-04", "04-05", "05-06", "06-07","07_08", "08-09", "09-10", "10-11", "11-12", "12-13")
 
 require(pander)
-pandoc.table(KBTDData, style = 'grid', caption = "Kobe/Duncan Era('03-'13)")
+pandoc.table(KBData, style = 'grid', caption = "Kobe Era('03-'13)")
 ```
 
 Seems like the 1st quartile in this era is lower than the Jordan era since the Jordan era's were around 0.70 for them. The median is around the same(0.76)
@@ -225,6 +225,39 @@ KBTDEra = subset(NBA, Season == "2007 - 2008" | Season == "2008 - 2009" | Season
 ggplot(data = KBTDEra, aes(x = FTPct, group = Season, fill = Season)) + geom_density(adjust = 1.5, alpha = .4) + scale_fill_manual(values=c("black", "seagreen", "coral")) + theme(legend.position="bottom")
 ```
 
-Other than the 11-12 era(which is inflated becuase the season was shortened due to lockout), the histogram distriutions from this era look similar to the Jordan era's.
+Other than the 11-12 era(which is inflated becuase the season was shortened due to lockout), the histogram distributions from this era look similar to the Jordan era's.
+
+```{r}
+Yr13_14 <- D %>% filter(League == "NBA", Season == "2013 - 2014") %>% select(FTPct) %>% summary() 
+Yr14_15 <- D %>% filter(League == "NBA", Season == "2014 - 2015") %>% select(FTPct) %>% summary()
+Yr15_16 <- D %>% filter(League == "NBA", Season == "2015 - 2016") %>% select(FTPct) %>% summary()
+Yr16_17 <- D %>% filter(League == "NBA", Season == "2016 - 2017") %>% select(FTPct) %>% summary()
+Yr17_18 <- D %>% filter(League == "NBA", Season == "2017 - 2018") %>% select(FTPct) %>% summary()
+Yr18_19 <- D %>% filter(League == "NBA", Season == "2018 - 2019") %>% select(FTPct) %>% summary()
+Yr19_20 <- D %>% filter(League == "NBA", Season == "2019 - 2020") %>% select(FTPct) %>% summary()
+
+KBTDData <- data.frame(Yr13_14[1:6], Yr14_15[1:6], Yr15_16[1:6], Yr16_17[1:6], Yr17_18[1:6], Yr18_19[1:6], Yr19_20[1:6])
+colnames(KBTDData) <- c("13_14", "14-15", "15-16", "16-17","17_18", "18-19", "19-20")
+
+require(pander)
+pandoc.table(KBTDData, style = 'grid', caption = "3-point era('03-'13)")
+```
+
+1st quartile, median and 3rd quartile in this era are similar to 
+
+```{r}
+# count how many datapoints for each one season
+D %>% filter(League == "NBA", Season == "2013 - 2014") %>% count # 361
+D %>% filter(League == "NBA", Season == "2014 - 2015") %>% count # 346
+D %>% filter(League == "NBA", Season == "2019 - 2020") %>% count # 420
+
+# Seasons used were andomly chosen which seasons were used with R.
+ModernEra = subset(NBA, Season == "2013 - 2014" | Season == "2014 - 2015" | Season == "2019 - 2020")
+
+# Kobe/Duncan Era density chart
+ggplot(data = ModernEra, aes(x = FTPct, group = Season, fill = Season)) + geom_density(adjust = 1.5, alpha = .4) + scale_fill_manual(values=c("black", "seagreen", "coral")) + theme(legend.position="bottom")
+```
+
+Teams played 71–75 games(COVID) during the 2019-2020 season, the histogram distributions from this era look similar to the Jordan era's. Other than the shortened season, the  histogram distributions from this era look similar to the other 2 eras since center is condensed around the 75%-80% free throw range.
 
 
