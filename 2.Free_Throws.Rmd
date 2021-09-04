@@ -7,12 +7,14 @@ output: html_document
 
 ** Dataset from Jacob Baruch on Kaggle.com:https://www.kaggle.com/jacobbaruch/basketball-players-stats-per-season-49-leagues 
 
+Dataset Information:
+
 Contains stats scraped from 49 basketball leagues from around the world 
 from 1990 to 2020**
 
 The purpose of this study is to see if the shooting fundamentals are held to the highest standard for each league and each time period in basketball. It tends to be a lithmus test for one's ability to be able to shoot the basketball in general; people look at college players's free throw percentage to judge their shooting potential for the professional game.
 
-```{r results = 'hide'}
+```{r, results = 'hide', echo = FALSE}
 library(tidyverse)
 library(dplyr)
 library(ggplot2)
@@ -25,18 +27,17 @@ D$FGPct = D$FGM / D$FGA # include FG% in dataset and order it in column neatly
 D$FTPct = D$FTM / D$FTA # include FT% ...
 D$X3Pct = D$X3PM / D$X3PA # include X3P% ...
 
-# manually add in new variables to dataset in order that I want instead of the end. There's got to be a better way to do this...
+# I manually add in new variables to dataset in order that I want instead of the end. There's got to be a better way to do this...
 D = D %>% select(League, Season, Stage, Player, Team, GP, MIN, FGM, FGA, FGPct, X3PM, X3PA, X3Pct, FTM, FTA, FTPct, TOV, PF, ORB, DRB, REB, AST, STL, BLK, PTS, birth_date, birth_year, birth_month, height, height_cm, weight, weight_kg, nationality, high_school,  draft_round, draft_pick, draft_team)
 ```
 
 ```{r}
-# displays first 6 rows of dataset
+# Displays the first 6 rows of dataset D
 head(D)
 ```
 
-
 ```{r}
-# extract all basketball leagues that are in the dataset
+# Extract all the available basketball leagues in the dataset
 unique(D$League, incomparables = FALSE)
 ```
 
@@ -57,9 +58,10 @@ The winner or runner up of VTB(Russian) league (usually CSKA wins, so the second
 
 wildcard places lasting 2-years or 1-year
 
-The winner of BBL ( German league).
+The winner of BBL (German league).
 
 ```{r}
+
 # subset from dataframe just the NBA in 2019-2020 regular season with statistical minimums to qualify for NBA League Leaders to limit outliers: 
 
 NBA19_20R <- D %>% filter(League == "NBA", Season == "2019 - 2020", FTA >= 125) # observations drop from 360 to 125 after adding statistical minimum
@@ -83,13 +85,11 @@ NBAxEuroL19_20R <- rbind(NBA19_20R, EuroL19_20R) # merge data
 
 ```{r}
 ## working w/ ggplots now: scatterplot
-ggplot(NBAxEuroL19_20R, aes(x = X3Pct, y = FTPct, col = League)) + geom_point() 
+ggplot(NBAxEuroL19_20R, aes(x = X3Pct, y = FTPct, col = League)) + geom_point()
 ```
-```{r}
-# also want to represent points by mapping so individual dot changes depending on PTS variable(NBA plays more games than Euroleague)
 
-# Let's just label these items.
-ix_label <- c("Ben Simmons", "Kyle Kuzma")
+```{r, warning = FALSE}
+# I also want to represent points by mapping so the individual dots change depending on the PTS variable(Note: NBA plays more games than Euroleague). I also isolated NBA player Andre Drummond's point on the data since he scores a lot of points but is a notorius free throw shooter
 
 plot <- ggplot(NBAxEuroL19_20R, aes(x = X3Pct, y = FTPct, col = League, size = PTS)) + geom_point(shape = ifelse(NBAxEuroL19_20R$Player == "Andre Drummond", 18, 20)) + scale_color_manual(values = c("NBA" = "blue", "Euroleague" = "orange")) + geom_smooth(method = lm, se = FALSE) + 
   geom_text_repel(label = ifelse(NBAxEuroL19_20R$Player == "Andre Drummond", "Andre Drummond", ""), nudge_x = -.05,
@@ -100,11 +100,14 @@ plot <- ggplot(NBAxEuroL19_20R, aes(x = X3Pct, y = FTPct, col = League, size = P
     segment.angle = 0) 
 
 plot
+```
 
+```{r}
 cor(NBAxEuroL19_20R$X3Pct, NBAxEuroL19_20R$FTPct)
 ```
 
 The scatter plot data shows no apparent relationship between 3-point shooting and free throw percentage since there is no linear pattern. Due to this, the regression line might not have any use here. We can tell since the correlation between the two functions is N/A.
+
 
 ```{r echo = F, results = 'hide'}
 ## ggplot practice
@@ -114,6 +117,8 @@ The scatter plot data shows no apparent relationship between 3-point shooting an
 ## ggplot(NBAxEuroL19_20R, aes(x = FTPct)) + 
 ## geom_histogram(bins = 30) + geom_histogram(color="black", fill="white") 
 ```
+
+In this part of the study, I want to compare free throw percentage between the NBA and Eurolegue in the 2019 - 2020 season by making separate charts for side-by side comparisons by making separate charts.
 
 ```{r}
 # histogram - overlaid and separated by league
@@ -131,7 +136,7 @@ It seems like histograms along with it's density plots are the best way to displ
 
 Based on the histogram, the Euroleague and NBA seem to have the same amount of free throw percentage rates.
 
-I want to now compare just the NBA between eras by making separate charts for side-by side comparisons between the eras and seasons within the eras. I could compare the decade by decade, but that isn't very accurate. I used WinesburgOhio's post on Reddit as reference to decide.(https://www.reddit.com/r/nbadiscussion/comments/khl4zh/eras_in_nba_history_when_do_they_beginend_and_why/). Our data has provided information for 3 eras in NBA basketball.
+In this part of the study, I want to compare free throw percentage between years in the NBA to see if there are any drastic changes since the way basketball has been played has changed from the past decades until now. I want to now compare just the NBA between eras by making summary tables and density charts for side-by side comparisons between the eras and seasons within them since comparing  decade by decade isn't very accurate. I used WinesburgOhio's post on Reddit as reference to when certain eras are in the NBA. (https://www.reddit.com/r/nbadiscussion/comments/khl4zh/eras_in_nba_history_when_do_they_beginend_and_why/). 
 
 ```{r}
 NBA <- D %>% filter(League == "NBA")
@@ -154,7 +159,7 @@ Important rule changes that may affect free throw percentages(from https://www.d
 
 I wanted to create summary table first to see if there were any major differences from a glance of the between the ranges  of the 1st and 3rd quantiles.
 
-```{r}
+```{r echo = F}
 Yr99_00 <- D %>% filter(League == "NBA", Season == "1999 - 2000") %>% select(FTPct) %>% summary() 
 Yr00_01 <- D %>% filter(League == "NBA", Season == "2000 - 2001") %>% select(FTPct) %>% summary()
 Yr01_02 <- D %>% filter(League == "NBA", Season == "2001 - 2002") %>% select(FTPct) %>% summary()
@@ -169,13 +174,15 @@ pandoc.table(JordanEraData, style = 'grid', caption = "Jordan Era('93-'03)")
 
 Seems like the quartiles and medians are similar to each other through the years.
 
-```{r}
-# count how many datapoints for each one season
+```{r echo = F, results = 'hide'}
+# count how many datapoints for each one season(Jordan era)
 D %>% filter(League == "NBA", Season == "1999 - 2000") %>% count # 342
 D %>% filter(League == "NBA", Season == "2000 - 2001") %>% count # 315
 D %>% filter(League == "NBA", Season == "2001 - 2002") %>% count # 319
 D %>% filter(League == "NBA", Season == "2002 - 2003") %>% count # 364
+```
 
+```{r echo = F, , message = FALSE, warning = FALSE}
 JordanEra = subset(NBA, Season == "1999 - 2000" | Season == "2000 - 2001" | Season == "2001 - 2002" | Season == "2002 - 2003")
 # Jordan Era histogram
 ggplot(JordanEra, aes(x = FTPct, fill = Season)) + geom_histogram(alpha = 0.7, position = "dodge") + scale_fill_manual(labels = c("1999 - 2000", "2000 - 2001","2001 - 2002","2002 - 2003"), values=c("black", "seagreen", "coral", "yellow")) 
@@ -191,7 +198,7 @@ We can see that the distibution of each season in this era is around the sane wi
 Looking at the data, the Jordan Era with 4 seasons is way too much. I may stick with 3 each era and pick out which to choose depending on what values are on the summary table for each respective era. The histogram is very cluttered so will stick to the histogram since there will be more seasons for the other eras.
 
 
-```{r}
+```{r echo = F}
 Yr03_04 <- D %>% filter(League == "NBA", Season == "2003 - 2004") %>% select(FTPct) %>% summary() 
 Yr04_05 <- D %>% filter(League == "NBA", Season == "2004 - 2005") %>% select(FTPct) %>% summary()
 Yr05_06 <- D %>% filter(League == "NBA", Season == "2005 - 2006") %>% select(FTPct) %>% summary()
@@ -212,12 +219,14 @@ pandoc.table(KBData, style = 'grid', caption = "Kobe Era('03-'13)")
 
 Seems like the 1st quartile in this era is lower than the Jordan era since the Jordan era's were around 0.70 for them. The median is around the same(0.76)
 
-```{r}
-# count how many datapoints for each one season
+```{r echo = F, results = 'hide'}
+# count how many datapoints for each one season (KB era)
 D %>% filter(League == "NBA", Season == "2005 - 2006") %>% count # 336
 D %>% filter(League == "NBA", Season == "2009 - 2010") %>% count # 349
 D %>% filter(League == "NBA", Season == "2011 - 2012") %>% count # 376
+```
 
+```{r echo = F, results = 'hide', message = FALSE}
 # Seasons used were andomly chosen which seasons were used with R.
 KBTDEra = subset(NBA, Season == "2007 - 2008" | Season == "2008 - 2009" | Season == "2011 - 2012")
 
@@ -227,7 +236,7 @@ ggplot(data = KBTDEra, aes(x = FTPct, group = Season, fill = Season)) + geom_den
 
 Other than the 11-12 era(which is inflated becuase the season was shortened due to lockout), the histogram distributions from this era look similar to the Jordan era's.
 
-```{r}
+```{r echo = F, results = 'hide'}
 Yr13_14 <- D %>% filter(League == "NBA", Season == "2013 - 2014") %>% select(FTPct) %>% summary() 
 Yr14_15 <- D %>% filter(League == "NBA", Season == "2014 - 2015") %>% select(FTPct) %>% summary()
 Yr15_16 <- D %>% filter(League == "NBA", Season == "2015 - 2016") %>% select(FTPct) %>% summary()
@@ -243,14 +252,16 @@ require(pander)
 pandoc.table(KBTDData, style = 'grid', caption = "3-point era('03-'13)")
 ```
 
-1st quartile, median and 3rd quartile in this era are similar to 
+1st quartile, median and 3rd quartile in this era are similar to the other eras.
 
-```{r}
-# count how many datapoints for each one season
+```{r echo = F, results = 'hide'}
+# count how many datapoints for each one season(3-point era)
 D %>% filter(League == "NBA", Season == "2013 - 2014") %>% count # 361
 D %>% filter(League == "NBA", Season == "2014 - 2015") %>% count # 346
 D %>% filter(League == "NBA", Season == "2019 - 2020") %>% count # 420
+```
 
+```{r, message = FALSE}
 # Seasons used were andomly chosen which seasons were used with R.
 ModernEra = subset(NBA, Season == "2013 - 2014" | Season == "2014 - 2015" | Season == "2019 - 2020")
 
@@ -259,5 +270,14 @@ ggplot(data = ModernEra, aes(x = FTPct, group = Season, fill = Season)) + geom_d
 ```
 
 Teams played 71–75 games(COVID) during the 2019-2020 season, the histogram distributions from this era look similar to the Jordan era's. Other than the shortened season, the  histogram distributions from this era look similar to the other 2 eras since center is condensed around the 75%-80% free throw range.
+
+<p style="text-align: center;"><br />_____________________________________________________</p>
+<p style="text-align: center;"><strong>APPENDIX</strong></p>
+<p style="text-align: center;">____________________________________________________</p>
+<p style="text-align: center;">R Code used listed below.</p>
+
+```{r, ref.label=knitr::all_labels(),echo=TRUE,eval=FALSE}
+
+```
 
 
