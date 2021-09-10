@@ -1,5 +1,5 @@
 ---
-title: "Bball Shooting Correlations - 49 Leagues"
+title: "FT Shooting Comparisons"
 author: "Walter Mymala"
 date: "8/9/2021"
 output: html_document
@@ -236,7 +236,7 @@ ggplot(data = KBTDEra, aes(x = FTPct, group = Season, fill = Season)) + geom_den
 
 Other than the 11-12 era(which is inflated becuase the season was shortened due to lockout), the histogram distributions from this era look similar to the Jordan era's.
 
-```{r echo = F, results = 'hide'}
+```{r echo = F}
 Yr13_14 <- D %>% filter(League == "NBA", Season == "2013 - 2014") %>% select(FTPct) %>% summary() 
 Yr14_15 <- D %>% filter(League == "NBA", Season == "2014 - 2015") %>% select(FTPct) %>% summary()
 Yr15_16 <- D %>% filter(League == "NBA", Season == "2015 - 2016") %>% select(FTPct) %>% summary()
@@ -261,7 +261,7 @@ D %>% filter(League == "NBA", Season == "2014 - 2015") %>% count # 346
 D %>% filter(League == "NBA", Season == "2019 - 2020") %>% count # 420
 ```
 
-```{r, message = FALSE}
+```{r, warning = FALSE}
 # Seasons used were andomly chosen which seasons were used with R.
 ModernEra = subset(NBA, Season == "2013 - 2014" | Season == "2014 - 2015" | Season == "2019 - 2020")
 
