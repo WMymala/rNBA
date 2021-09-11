@@ -12,7 +12,7 @@ Dataset Information:
 Contains stats scraped from 49 basketball leagues from around the world 
 from 1990 to 2020**
 
-The purpose of this study is to see if the shooting fundamentals are held to the highest standard for each league and each time period in basketball. It tends to be a lithmus test for one's ability to be able to shoot the basketball in general; people look at college players's free throw percentage to judge their shooting potential for the professional game.
+The purpose of this study is to see if the free throws are held to the highest standard in professional basketball between different years and different leagues. Free throws tend to be a genreal litmus test for one's ability to be able to shoot the basketball in general. For example, it is known that people tend to look at NCAA players's free throw percentage to judge their shooting potential for the professional game.
 
 ```{r, results = 'hide', echo = FALSE}
 library(tidyverse)
@@ -32,34 +32,35 @@ D = D %>% select(League, Season, Stage, Player, Team, GP, MIN, FGM, FGA, FGPct, 
 ```
 
 ```{r}
-# Displays the first 6 rows of dataset D
-head(D)
+# First 2 columns of the original dataset
+head(D, n = 2L)
 ```
 
 ```{r}
-# Extract all the available basketball leagues in the dataset
+# All the available basketball leagues in the dataset
 unique(D$League, incomparables = FALSE)
 ```
 
-**The Euroleague and Eurocup is bascally like soccer's Champions League and Europa League in that it consists of having top European teams playing one another. These teams play in these respective leagues as well as their own domestic league concurrently. This may affect the data.**
+**Note: The Euroleague and Eurocup is comparable to soccer's Champions League and Europa League in that it consists of having top European teams playing one another. These teams play in these respective leagues as well as their own domestic league concurrently. Essentially, there are some teams have are in the Euroleague and Eurocup while playing for their domestic league at the same time.**
 
 ** The European professional club basketball system starting in 2018**
 
 From MrThirteenXIII from Reddit(https://www.reddit.com/r/Euroleague/comments/hiolt2/how_are_euroleague_teams_selected/):
-13 teams have a contract and they participate no matter what. These teams are Real Madrid(ESP), Barcelona(ESP), Baskonia(ESP), Olimpia Milano(ITA), Zalgiris(LTU), Panathinaikos(GRC), Olympiacos(GRC), Panathinaikos(GRC), Fenerbahce(TUR), Anadolu Efes(TUR), CSKA Moscow(RUS), LDLC ASVEL(FRA) and Maccabi Tel Aviv(ISR).
+13 teams have a contract {in the Euroleague} and they participate no matter what. These teams are Real Madrid(ESP), Barcelona(ESP), Baskonia(ESP), Olimpia Milano(ITA), Zalgiris(LTU), Panathinaikos(GRC), Olympiacos(GRC), Panathinaikos(GRC), Fenerbahce(TUR), Anadolu Efes(TUR), CSKA Moscow(RUS), LDLC ASVEL(FRA) and Maccabi Tel Aviv(ISR).
 
 The 7 spots left :
 
-The winner of eurocup (second tier European competition)
+• The winner of Eurocup (second tier European competition where 24 other teams participate)
 
-The winner of ABA league (league based on former countries of Yuguslavia: Bosnia and Herzegovina, Croatia, Macedonia, Montenegro, Serbia (including the regions of Kosovo and Vojvodina) and Slovenia)
+• The winner of ABA league (league based on former countries of Yuguslavia: Bosnia and Herzegovina, Croatia, Macedonia, Montenegro, Serbia (including the regions of Kosovo and Vojvodina) and Slovenia)
 
-The winner or runner up of VTB(Russian) league (usually CSKA wins, so the second team from VTB)
+• The winner or runner up of VTB(Russian) league (usually CSKA wins, so the second team from VTB)
 
-wildcard places lasting 2-years or 1-year
+• wildcard places lasting 2-years or 1-year
 
-The winner of BBL (German league).
+• The winner of BBL (German league).
 
+I will now create a subset NBA and Euroleague data since they are the 2 subjectively best(in ability) basketball leagues in the world. I will subset data for each league to allow players that
 ```{r}
 
 # subset from dataframe just the NBA in 2019-2020 regular season with statistical minimums to qualify for NBA League Leaders to limit outliers: 
@@ -67,11 +68,13 @@ The winner of BBL (German league).
 NBA19_20R <- D %>% filter(League == "NBA", Season == "2019 - 2020", FTA >= 125) # observations drop from 360 to 125 after adding statistical minimum
 head(NBA19_20R)
 
-# scatterplot w/o using ggplot
-plot(NBA19_20R$X3Pct, NBA19_20R$FTPct, xlab = '3 Point %', ylab = 'Free Throw %')
 ```
 
-From our data, ignoring the outliers near 0.0 3 point % and 0.6 3 point %, there is no clear pattern to indicate relationship between 3 point % and free throw %. Let's do a scatterplot, but with ggplot. 
+```{r echo = F, results = 'hide'}
+# scatterplot w/o using ggplot for correlation btw 3P% (dependant) and FT% (independent)
+plot(NBA19_20R$FTPct, NBA19_20R$X3Pct, xlab = 'Free Throw %', ylab = '3 point %')
+```
+
 
 ```{r}
 ## subset dataframe of the second best league in the 2019-2020 regular season according to ESPN with statistical minimums to qualify for Leagues Leaders(Euroleague players must play 51% of games to be in league leaders, so 34 • .51 = 17.34 is 18 games minimum)
@@ -87,6 +90,8 @@ NBAxEuroL19_20R <- rbind(NBA19_20R, EuroL19_20R) # merge data
 ## working w/ ggplots now: scatterplot
 ggplot(NBAxEuroL19_20R, aes(x = X3Pct, y = FTPct, col = League)) + geom_point()
 ```
+
+From our data, ignoring the outliers near 0.0 3 point % and 0.6 3 point %, there is no clear pattern to indicate relationship between 3 point % and free throw %. This shows the possibility that at the NBA level there may be a chance that free throw % is a good indicator of 3 point %. Let's do a scatterplot, but with ggplot. 
 
 ```{r, warning = FALSE}
 # I also want to represent points by mapping so the individual dots change depending on the PTS variable(Note: NBA plays more games than Euroleague). I also isolated NBA player Andre Drummond's point on the data since he scores a lot of points but is a notorius free throw shooter
@@ -112,10 +117,10 @@ The scatter plot data shows no apparent relationship between 3-point shooting an
 ```{r echo = F, results = 'hide'}
 ## ggplot practice
 # map FTPct to transparency of each point
-## ggplot(NBAxEuroL19_20R) + geom_point(aes(x = X3Pct, y = FTPct, col = League, size = PTS, shape = League, alpha = FTPct)) + scale_color_manual(values = c("NBA" = "blue", "Euroleague" = "orange"))
+ggplot(NBAxEuroL19_20R) + geom_point(aes(x = X3Pct, y = FTPct, col = League, size = PTS, shape = League, alpha = FTPct)) + scale_color_manual(values = c("NBA" = "blue", "Euroleague" = "orange"))
 
-## ggplot(NBAxEuroL19_20R, aes(x = FTPct)) + 
-## geom_histogram(bins = 30) + geom_histogram(color="black", fill="white") 
+ggplot(NBAxEuroL19_20R, aes(x = FTPct)) + 
+geom_histogram(bins = 30) + geom_histogram(color="black", fill="white") 
 ```
 
 In this part of the study, I want to compare free throw percentage between the NBA and Eurolegue in the 2019 - 2020 season by making separate charts for side-by side comparisons by making separate charts.
