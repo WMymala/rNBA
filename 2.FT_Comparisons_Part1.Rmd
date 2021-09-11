@@ -273,7 +273,13 @@ ggplot(data = ModernEra, aes(x = FTPct, group = Season, fill = Season)) + geom_d
 
 Teams played 71–75 games(COVID) during the 2019-2020 season, the histogram distributions from this era look similar to the Jordan era's. Other than the shortened season, the  histogram distributions from this era look similar to the other 2 eras since center is condensed around the 75%-80% free throw range.
 
-For good measure, I will take a random season for each NBA era
+The data for all the eras show that despite the change in play styles, change in pace, and more, the free throw percentage for NBA players has stayed pretty similar throughout. The lack of change in the statistic may indicate that free throws have continued to be a staple in most NBA players's "bag". 
+
+For good measure, I will take a random season for each NBA era and run a table and density chart again to show that FT% hasn't chhanged much throughout the different eras.
+```{r}
+# years 2, 9, 5
+```
+
 
 <p style="text-align: center;"><br />_____________________________________________________</p>
 <p style="text-align: center;"><strong>APPENDIX</strong></p>
