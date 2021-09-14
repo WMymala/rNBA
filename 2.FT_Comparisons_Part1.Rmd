@@ -154,10 +154,18 @@ Important rule changes that may affect free throw percentages(from https://www.d
 
 • 2018 — "Shot clock reset to 14 after an offensive rebound rather than 24" (Sorenson, DeseretNews)
 
-I wanted to create summary table first to see if there were any major differences from a glance of the between the ranges  of the 1st and 3rd quantiles.
+I wanted to create summary table first to see if there were any major differences from a glance of the between the ranges  of the 1st and 3rd quantiles. Note: "n = ..." refers to players in the season that were recorded in the data.
 
 ```{r}
 NBA <- D %>% filter(League == "NBA")
+```
+
+```{r echo = F, results = 'hide'}
+# count how many datapoints for each one season(Jordan era)
+D %>% filter(League == "NBA", Season == "1999 - 2000") %>% count # 342
+D %>% filter(League == "NBA", Season == "2000 - 2001") %>% count # 315
+D %>% filter(League == "NBA", Season == "2001 - 2002") %>% count # 319
+D %>% filter(League == "NBA", Season == "2002 - 2003") %>% count # 364
 ```
 
 ```{r echo = F, message = FALSE}
@@ -167,21 +175,14 @@ Yr01_02 <- NBA %>% filter(Season == "2001 - 2002") %>% select(FTPct) %>% summary
 Yr02_03 <- NBA %>% filter(Season == "2002 - 2003") %>% select(FTPct) %>% summary()
 
 JordanEraData <- data.frame(Yr99_00[1:6], Yr00_01[1:6], Yr01_02[1:6], Yr02_03[1:6])
-colnames(JordanEraData) <- c("99-00", "00-01", "01-02", "02-03")
+colnames(JordanEraData) <- c("99-00 (n = 342)", "00-01 (n = 315)", "01-02 (n = 319)", "02-03 (n = 364)")
 
 require(pander)
 pandoc.table(JordanEraData, style = 'grid', caption = "Jordan Era('93-'03)")
 ```
 
-Seems like the quartiles and medians are similar to each other through the years.
+Seems like the quartiles and medians for FT% are similar to each other through the years so it's safe to assume the era cutoff holds for the data so far. Let's see this data visually through a histogram and density chart.
 
-```{r echo = F, results = 'hide'}
-# count how many datapoints for each one season(Jordan era)
-D %>% filter(League == "NBA", Season == "1999 - 2000") %>% count # 342
-D %>% filter(League == "NBA", Season == "2000 - 2001") %>% count # 315
-D %>% filter(League == "NBA", Season == "2001 - 2002") %>% count # 319
-D %>% filter(League == "NBA", Season == "2002 - 2003") %>% count # 364
-```
 
 ```{r echo = F, message = FALSE, warning = FALSE, results = 'hide'}
 JordanEra = subset(NBA, Season == "1999 - 2000" | Season == "2000 - 2001" | Season == "2001 - 2002" | Season == "2002 - 2003")
@@ -197,8 +198,21 @@ ggplot(data = JordanEra, aes(x = FTPct, group = Season, fill = Season)) + geom_d
 
 We can see that the distibution of each season in this era is around the sane with the center of the distributions concentated around 0.80 range.
 
-Looking at the data, the Jordan Era with 4 seasons is way too much. I may stick with 3 each era and pick out which to choose depending on what values are on the summary table for each respective era. The histogram is very cluttered so will stick to the histogram since there will be more seasons for the other eras.
+Looking at the data, the Jordan Era with 4 seasons is way too much. I plan to stick with 3 seasons for each era and pick out which to choose depending on what values are on the summary table for each respective era. The histogram is very cluttered so I will stick to the density chartsince there will be more seasons for the other eras.
 
+```{r echo = F, results = 'hide'}
+# count how many datapoints for each one season (KB era)
+D %>% filter(League == "NBA", Season == "2003 - 2004") %>% count # 335
+D %>% filter(League == "NBA", Season == "2004 - 2005") %>% count # 362
+D %>% filter(League == "NBA", Season == "2005 - 2006") %>% count # 336
+D %>% filter(League == "NBA", Season == "2006 - 2007") %>% count # 333
+D %>% filter(League == "NBA", Season == "2007 - 2008") %>% count # 362
+D %>% filter(League == "NBA", Season == "2008 - 2009") %>% count # 352
+D %>% filter(League == "NBA", Season == "2009 - 2010") %>% count # 349
+D %>% filter(League == "NBA", Season == "2010 - 2011") %>% count # 339
+D %>% filter(League == "NBA", Season == "2011 - 2012") %>% count # 376
+D %>% filter(League == "NBA", Season == "2012 - 2013") %>% count # 367
+```
 
 ```{r echo = F}
 Yr03_04 <- NBA %>% filter(Season == "2003 - 2004") %>% select(FTPct) %>% summary() 
@@ -213,30 +227,35 @@ Yr11_12 <- NBA %>% filter(Season == "2011 - 2012") %>% select(FTPct) %>% summary
 Yr12_13 <- NBA %>% filter(Season == "2012 - 2013") %>% select(FTPct) %>% summary()
 
 KBData <- data.frame(Yr03_04[1:6], Yr04_05[1:6], Yr05_06[1:6], Yr06_07[1:6], Yr07_08[1:6], Yr08_09[1:6], Yr09_10[1:6], Yr10_11[1:6],Yr11_12[1:6], Yr12_13[1:6])
-colnames(KBData) <- c("03-04", "04-05", "05-06", "06-07","07_08", "08-09", "09-10", "10-11", "11-12", "12-13")
+colnames(KBData) <- c("03-04 (n = 335)", "04-05 (n = 362)", "05-06 (n = 336)", "06-07 (n = 333)","07-08 (n = 362)", "08-09 (n = 352)", "09-10 (n = 349)", "10-11 (n = 339)", "11-12 (n = 376)", "12-13 (n = 367)")
 
 require(pander)
 pandoc.table(KBData, style = 'grid', caption = "Kobe Era('03-'13)")
 ```
 
-Seems like the 1st quartile in this era is lower than the Jordan era since the Jordan era's were around 0.70 for them. The median is around the same(0.76)
+The 1st quartile in this era is a little lower than the Jordan era since the Jordan era's were around 0.70 for them; however, he median is around the same(0.76)
 
-```{r echo = F, results = 'hide'}
-# count how many datapoints for each one season (KB era)
-D %>% filter(League == "NBA", Season == "2005 - 2006") %>% count # 336
-D %>% filter(League == "NBA", Season == "2009 - 2010") %>% count # 349
-D %>% filter(League == "NBA", Season == "2011 - 2012") %>% count # 376
-```
 
 ```{r echo = F, results = 'hide', message = FALSE, warning = FALSE}
-# Seasons used were andomly chosen which seasons were used with R.
-KBTDEra = subset(NBA, Season == "2007 - 2008" | Season == "2008 - 2009" | Season == "2011 - 2012")
+# Seasons used were randomly chosen with R.
+KBEra = subset(NBA, Season == "2007 - 2008" | Season == "2008 - 2009" | Season == "2011 - 2012")
 
-# Kobe/Duncan Era density chart
-ggplot(data = KBTDEra, aes(x = FTPct, group = Season, fill = Season)) + geom_density(adjust = 1.5, alpha = .4) + scale_fill_manual(values=c("black", "seagreen", "coral")) + theme(legend.position="bottom")
+# Kobedensity chart
+ggplot(data = KBEra, aes(x = FTPct, group = Season, fill = Season)) + geom_density(adjust = 1.5, alpha = .4) + scale_fill_manual(values=c("black", "seagreen", "coral")) + theme(legend.position="bottom")
 ```
 
-Other than the 11-12 era(which is inflated becuase the season was shortened due to lockout), the histogram distributions from this era look similar to the Jordan era's.
+Other than the 11-12 era(which is inflated because the season was shortened due to lockout), the histogram distributions from this era look similar to the Jordan era's.
+
+```{r echo = F, results = 'hide'}
+# count how many datapoints for each one season(3-point era)
+D %>% filter(League == "NBA", Season == "2013 - 2014") %>% count # 361
+D %>% filter(League == "NBA", Season == "2014 - 2015") %>% count # 346
+D %>% filter(League == "NBA", Season == "2015 - 2016") %>% count # 350
+D %>% filter(League == "NBA", Season == "2016 - 2017") %>% count # 440
+D %>% filter(League == "NBA", Season == "2017 - 2018") %>% count # 430
+D %>% filter(League == "NBA", Season == "2018 - 2019") %>% count # 435
+D %>% filter(League == "NBA", Season == "2019 - 2020") %>% count # 420
+```
 
 ```{r echo = F}
 Yr13_14 <- NBA %>% filter(Season == "2013 - 2014") %>% select(FTPct) %>% summary() 
@@ -248,38 +267,47 @@ Yr18_19 <- NBA %>% filter(Season == "2018 - 2019") %>% select(FTPct) %>% summary
 Yr19_20 <- NBA %>% filter(Season == "2019 - 2020") %>% select(FTPct) %>% summary()
 
 KBTDData <- data.frame(Yr13_14[1:6], Yr14_15[1:6], Yr15_16[1:6], Yr16_17[1:6], Yr17_18[1:6], Yr18_19[1:6], Yr19_20[1:6])
-colnames(KBTDData) <- c("13_14", "14-15", "15-16", "16-17","17_18", "18-19", "19-20")
+colnames(KBTDData) <- c("13-14 (n = 361)", "14-15 (n = 346)", "15-16 (n = 350)", "16-17 (n = 440)", "17-18 (n = 430)", "18-19 (n = 435)", "19-20 (n = 420)")
 
 require(pander)
 pandoc.table(KBTDData, style = 'grid', caption = "3-point era('03-'13)")
 ```
 
-1st quartile, median and 3rd quartile in this era are similar to the other eras.
-
-```{r echo = F, results = 'hide'}
-# count how many datapoints for each one season(3-point era)
-D %>% filter(League == "NBA", Season == "2013 - 2014") %>% count # 361
-D %>% filter(League == "NBA", Season == "2014 - 2015") %>% count # 346
-D %>% filter(League == "NBA", Season == "2019 - 2020") %>% count # 420
-```
+1st quartile in this era are similar to the other eras. The median and 3rd quartile are noticiably larger than the Jordan era and similar to the Kobe era statring from the 16-17 season. We can say the distribution FT% in each era is around the same. Note: the number of NBA players whose data was recorded seems to have taken a spike starting in the 16-17 season. Under 16-17 the reason is unknown but one reason for the spike starting from the 17-18 season, the NBA implemented extra roster places via 2-way contracts—player can play in NBA and G-league at same time. This should have affected our data by reducing the mean since 2-way contract players generally are young and not as good as their fully pro counterparts, but this case has turned out to be false. The data stayed the same.
 
 ```{r, warning = FALSE}
-# Seasons used were andomly chosen which seasons were used with R.
+# Seasons used were randomly chosen with R.
 ModernEra = subset(NBA, Season == "2013 - 2014" | Season == "2014 - 2015" | Season == "2019 - 2020")
 
-# Kobe/Duncan Era density chart
+# Kobe Era density chart
 ggplot(data = ModernEra, aes(x = FTPct, group = Season, fill = Season)) + geom_density(adjust = 1.5, alpha = .4) + scale_fill_manual(values=c("black", "seagreen", "coral")) + theme(legend.position="bottom")
 ```
 
 Teams played 71–75 games(COVID) during the 2019-2020 season, the histogram distributions from this era look similar to the Jordan era's. Other than the shortened season, the  histogram distributions from this era look similar to the other 2 eras since center is condensed around the 75%-80% free throw range.
 
-The data for all the eras show that despite the change in play styles, change in pace, and more, the free throw percentage for NBA players has stayed pretty similar throughout. The lack of change in the statistic may indicate that free throws have continued to be a staple in most NBA players's "bag". 
+The data—table and density plot—for all the eras show that despite the change in play styles, change in pace, and more, the free throw percentage for NBA players has stayed pretty similar throughout. The lack of change in the statistic may indicate that free throws have continued to be a staple in most NBA players's "bag". 
 
 For good measure, I will take a random season for each NBA era and run a table and density chart again to show that FT% hasn't chhanged much throughout the different eras.
-```{r}
-# years 2, 9, 5
+```{r echo = F}
+# using sample() to randomize I got these seasons for respective era: 2, 9, 5
+EraComparison <- data.frame(Yr04_05[1:6], Yr11_12[1:6], Yr17_18[1:6])
+
+EraCompData <- data.frame(Yr04_05[1:6], Yr11_12[1:6], Yr17_18[1:6])
+colnames(EraCompData) <- c("04-05 (n = 362)", "11-12 (n = 376)", "17-18 (n = 430)")
+
+require(pander)
+pandoc.table(EraCompData, style = 'grid', caption = "Era Comparison")
 ```
 
+```{r echo = F, results = 'hide', message = FALSE, warning = FALSE}
+# Seasons used were randomly chosen with R.
+EraComp = subset(NBA, Season == "2004 - 2005" | Season == "2011 - 2012" | Season == "2017 - 2018")
+
+# Era density chart
+ggplot(data = EraComp, aes(x = FTPct, group = Season, fill = Season)) + geom_density(adjust = 1.5, alpha = .4) + scale_fill_manual(values=c("black", "seagreen", "coral")) + theme(legend.position="bottom")
+```
+
+The 2017-2018 NBA season has a slightly different 
 
 <p style="text-align: center;"><br />_____________________________________________________</p>
 <p style="text-align: center;"><strong>APPENDIX</strong></p>
