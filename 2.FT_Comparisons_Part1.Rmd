@@ -181,7 +181,7 @@ require(pander)
 pandoc.table(JordanEraData, style = 'grid', caption = "Jordan Era('93-'03)")
 ```
 
-Seems like the quartiles and medians for FT% are similar to each other through the years so it's safe to assume the era cutoff holds for the data so far. Let's see this data visually through a histogram and density chart.
+Seems like the average quartiles and average median for FT% are similar to each other through the years (1Q: ~0.697, Med: ~0.765, 3Q: ~0.826). Let's see this data visually through a histogram and density chart.
 
 
 ```{r echo = F, message = FALSE, warning = FALSE, results = 'hide'}
@@ -233,7 +233,9 @@ require(pander)
 pandoc.table(KBData, style = 'grid', caption = "Kobe Era('03-'13)")
 ```
 
-The 1st quartile in this era is a little lower than the Jordan era since the Jordan era's were around 0.70 for them; however, he median is around the same(0.76)
+Jordan era summary (averages): {1Q: ~0.697, Med: ~0.765, 3Q: ~0.826}
+Kobe era summary: {1Q: ~0.684, Med: ~0.766, 3Q: ~0.834}
+The 1st quartile for this era is a little lower than the Jordan era however the median is around the same and 3rd quantile is higher. The differences are both insignificant though so we cannot say nything about FT% changing after comparing the eras.
 
 
 ```{r echo = F, results = 'hide', message = FALSE, warning = FALSE}
@@ -244,7 +246,7 @@ KBEra = subset(NBA, Season == "2007 - 2008" | Season == "2008 - 2009" | Season =
 ggplot(data = KBEra, aes(x = FTPct, group = Season, fill = Season)) + geom_density(adjust = 1.5, alpha = .4) + scale_fill_manual(values=c("black", "seagreen", "coral")) + theme(legend.position="bottom")
 ```
 
-Other than the 11-12 era(which is inflated because the season was shortened due to lockout), the histogram distributions from this era look similar to the Jordan era's.
+Other than the 11-12 era(The 2011 - 2012 season is inflated because the season was shortened due to lockout), the histogram distributions from this era look similar to the Jordan era's.
 
 ```{r echo = F, results = 'hide'}
 # count how many datapoints for each one season(3-point era)
@@ -273,7 +275,7 @@ require(pander)
 pandoc.table(KBTDData, style = 'grid', caption = "3-point era('03-'13)")
 ```
 
-1st quartile in this era are similar to the other eras. The median and 3rd quartile are noticiably larger than the Jordan era and similar to the Kobe era statring from the 16-17 season. We can say the distribution FT% in each era is around the same. Note: the number of NBA players whose data was recorded seems to have taken a spike starting in the 16-17 season. Under 16-17 the reason is unknown but one reason for the spike starting from the 17-18 season, the NBA implemented extra roster places via 2-way contracts—player can play in NBA and G-league at same time. This should have affected our data by reducing the mean since 2-way contract players generally are young and not as good as their fully pro counterparts, but this case has turned out to be false. The data stayed the same.
+1st quartile in this era are similar to the other eras. The median and 3rd quartile are noticeably larger than the Jordan era and similar to the Kobe era staring from the 16-17 season. We can say the distribution FT% in each era is around the same. Note: the number of NBA players whose data was recorded seems to have taken a spike starting in the 16-17 season. Under 16-17 the reason is unknown but one reason for the spike starting from the 17-18 season, the NBA implemented extra roster places via 2-way contracts—player can play in NBA and G-league at same time. This should have affected our data by reducing the mean since 2-way contract players generally are young and not as good as their fully pro counterparts, but this case has turned out to be false. The data stayed the same.
 
 ```{r, warning = FALSE}
 # Seasons used were randomly chosen with R.
