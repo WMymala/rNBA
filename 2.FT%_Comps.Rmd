@@ -1,5 +1,5 @@
 ---
-title: "FT Shooting Comparisons Part 1"
+title: "FT Shooting % Comparisonsx"
 author: "Walter Mymala"
 date: "8/9/2021"
 output: html_document
