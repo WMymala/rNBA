@@ -1,0 +1,40 @@
+---
+title: 'Can Shot Attempts Define NBA Eras?'
+author: "Walter Mymala"
+date: "9/12/2021"
+output: html_document
+---
+
+From the previous project I will continue using WinesburgOhio's post on Reddit as reference to when certain eras are in the NBA since the explanations given  on how each era is seperated is mostly universally accepted by the NBA viewing world (https://www.reddit.com/r/nbadiscussion/comments/khl4zh/eras_in_nba_history_when_do_they_beginend_and_why/). 
+
+Eras(Summarized):
+
+• '47-'56: Pre-Russell.
+
+• '57-'67: Russell Era.
+
+• '68-'79: Cocaine Era 
+
+• '80-'92: Magic/Bird Era
+
+• '93-'03: Jordan Era. Dead ball era—slower paced games and more defensive minded. 3 point shooting starting to be utilized more.
+
+• '04-'13: Kobe Era. Pace picked back up, 3 point shooting up more, more individual NBA talent than before.
+
+• '14-Present: Curry/3-point era. Pace increased, 3-point shooting increased considerably, positionless basketball, defense harder to play b/c refs(ticky-tack fouls), analytics to judge players.
+
+Important rule changes that may affect free throw percentages(from https://www.deseret.com/2019/2/21/20666425/nba-rules-have-adapted-over-the-years-to-make-the-game-more-fun-for-players-fans):
+
+• 2001 — "Illegal defense eliminated and zone defense allowed. Defensive 3-second rule prohibits defensive player from being in lane without guarding offensive player" (Sorenson, DeseretNews)
+
+• 2018 — "Shot clock reset to 14 after an offensive rebound rather than 24" (Sorenson, DeseretNews)
+
+```{r}
+library("nbastatR")
+library("tidyverse")
+```
+
+```{r}
+
+```
+

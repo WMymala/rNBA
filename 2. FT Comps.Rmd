@@ -1,5 +1,5 @@
 ---
-title: "FT Shooting % Comparisonsx"
+title: "FT Shooting % Comparisons"
 author: "Walter Mymala"
 date: "8/9/2021"
 output: html_document
@@ -148,6 +148,8 @@ ggplot(data = NBAxEuroL19_20R, aes(x = FTPct, group = League, fill = League)) + 
 It seems like histograms along with it's density plots are the best way to display comparisons for free throw shooting information between groups.
 
 Based on the histogram, the Euroleague and NBA seem to have the same amount of free throw percentage rates.
+
+<br> <br> 
 
 In this part of the study, I want to compare free throw percentage between eras in the NBA to see if there are any drastic changes since the way basketball has been played has changed from the past decades until now. I want to now compare just the NBA between eras by making summary tables and density charts for side-by side comparisons between the eras and seasons within them since comparing decade by decade isn't very accurate. I used WinesburgOhio's post on Reddit as reference to when certain eras are in the NBA. (https://www.reddit.com/r/nbadiscussion/comments/khl4zh/eras_in_nba_history_when_do_they_beginend_and_why/). 
 
