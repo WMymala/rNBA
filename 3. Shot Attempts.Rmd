@@ -5,19 +5,11 @@ date: "9/12/2021"
 output: html_document
 ---
 
+The goal of this project is to find out the Curry effect.
+
 From the previous project I will continue using WinesburgOhio's post on Reddit as reference to when certain eras are in the NBA since the explanations given  on how each era is seperated is mostly universally accepted by the NBA viewing world (https://www.reddit.com/r/nbadiscussion/comments/khl4zh/eras_in_nba_history_when_do_they_beginend_and_why/). 
 
-Eras(Summarized):
-
-• '47-'56: Pre-Russell.
-
-• '57-'67: Russell Era.
-
-• '68-'79: Cocaine Era 
-
-• '80-'92: Magic/Bird Era
-
-• '93-'03: Jordan Era. Dead ball era—slower paced games and more defensive minded. 3 point shooting starting to be utilized more.
+The Eras in The Study(Summarized):
 
 • '04-'13: Kobe Era. Pace picked back up, 3 point shooting up more, more individual NBA talent than before.
 
@@ -35,6 +27,8 @@ library("tidyverse")
 ```
 
 ```{r}
-
+Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 2)
+celtics_shots <- teams_shots(teams = "Boston Celtics", seasons = c(1997))
+lakers_shots <- teams_shots(teams = "Los Angeles Lakers", seasons = c(1997))
 ```
 
